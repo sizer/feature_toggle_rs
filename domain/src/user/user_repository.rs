@@ -2,6 +2,7 @@ use crate::error::MyResult;
 
 use super::User;
 
+#[cfg_attr(feature = "mock", mockall::automock)]
 pub trait UserRepository {
     fn list(&self) -> Vec<User>;
 

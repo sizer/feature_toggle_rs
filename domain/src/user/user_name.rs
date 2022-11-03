@@ -5,6 +5,7 @@ use std::fmt;
 
 use self::{user_first_name::UserFirstName, user_last_name::UserLastName};
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct UserName {
     first_name: UserFirstName,
     last_name: UserLastName,

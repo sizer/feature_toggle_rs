@@ -1,5 +1,6 @@
 use std::fmt;
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct UserLastName(String);
 
 impl UserLastName {

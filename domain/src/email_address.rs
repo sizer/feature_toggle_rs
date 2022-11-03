@@ -1,11 +1,12 @@
 use std::fmt;
 
-pub struct EmailAdress {
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub struct EmailAddress {
     user: String,
     domain: String,
 }
 
-impl EmailAdress {
+impl EmailAddress {
     pub fn new(s: impl ToString) -> Self {
         // TODO validate s
 
@@ -18,7 +19,7 @@ impl EmailAdress {
     }
 }
 
-impl fmt::Display for EmailAdress {
+impl fmt::Display for EmailAddress {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}@{}", self.user, self.domain)
     }

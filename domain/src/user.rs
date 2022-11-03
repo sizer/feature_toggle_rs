@@ -1,17 +1,21 @@
+use crate::EmailAddress;
+
 use self::{user_id::UserId, user_name::UserName};
 
 pub mod user_id;
 pub mod user_name;
 pub mod user_repository;
 
+#[derive(Debug, PartialEq, Eq)]
 pub struct User {
     id: UserId,
     name: UserName,
+    email: EmailAddress,
 }
 
 impl User {
-    pub fn new(id: UserId, name: UserName) -> Self {
-        Self { id, name }
+    pub fn new(id: UserId, name: UserName, email: EmailAddress) -> Self {
+        Self { id, name, email }
     }
 
     pub fn id(&self) -> &UserId {
@@ -20,5 +24,9 @@ impl User {
 
     pub fn name(&self) -> &UserName {
         &self.name
+    }
+
+    pub fn email(&self) -> &EmailAddress {
+        &self.email
     }
 }

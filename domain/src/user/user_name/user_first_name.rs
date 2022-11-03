@@ -1,5 +1,5 @@
 use std::fmt;
-
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct UserFirstName(String);
 
 impl UserFirstName {
