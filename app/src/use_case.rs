@@ -1,16 +1,18 @@
 use domain::{
-    EmailAddress, MyError, MyErrorType, MyResult, Repositories, User, UserFirstName, UserLastName,
-    UserName, UserRepository,
+    EmailAddress, Feature, FeatureName, FeatureRepository, MyError, MyErrorType, MyResult,
+    Repositories, User, UserFirstName, UserLastName, UserName, UserRepository,
 };
 
 pub struct UseCase<'r, R: Repositories> {
     user_repo: &'r R::UserRepo,
+    feature_repo: &'r R::FeatureRepo,
 }
 
 impl<'r, R: Repositories> UseCase<'r, R> {
     pub fn new(repositories: &'r R) -> Self {
         Self {
             user_repo: repositories.user_repository(),
+            feature_repo: repositories.feature_repository(),
         }
     }
 
@@ -77,5 +79,29 @@ impl<'r, R: Repositories> UseCase<'r, R> {
         let new_user = User::new(user.id().clone(), new_user_name, user.email().clone());
 
         self.user_repo.update(new_user)
+    }
+
+    pub fn search_features(&self, name: Option<&FeatureName>) -> Vec<Feature> {
+        fn name_eq(a: &str, b: &str) -> bool {
+            a.to_lowercase() == b.to_lowercase()
+        }
+
+        if name.is_none() {
+            vec![]
+        } else {
+            let features = self.feature_repo.list();
+            let features = features
+                .into_iter()
+                .filter(|a_feature| {
+                    name.map(|n| name_eq(&n.to_string(), &a_feature.name().to_string()))
+                        .unwrap_or_else(|| true)
+                })
+                .collect();
+            features
+        }
+    }
+
+    pub fn add_feature(&self, feature: domain::Feature) -> MyResult<()> {
+        self.feature_repo.create(feature)
     }
 }

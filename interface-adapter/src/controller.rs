@@ -2,7 +2,8 @@ use app::UseCase;
 use domain::{MyResult, Repositories};
 
 use crate::{
-    AddUserRequestDTO, AddUserResponseDTO, SearchUserRequestDTO, SearchUserResponseDTO,
+    AddFeatureRequestDTO, AddFeatureResponseDTO, AddUserRequestDTO, AddUserResponseDTO,
+    SearchFeatureRequestDTO, SearchFeatureResponseDTO, SearchUserRequestDTO, SearchUserResponseDTO,
     UpdateUserRequestDTO, UpdateUserResponseDTO,
 };
 
@@ -36,5 +37,16 @@ impl<'r, R: Repositories> Controller<'r, R> {
         self.use_case
             .update_user_by_email(&dto.email, dto.first_name, dto.last_name)
             .map(|()| UpdateUserResponseDTO {})
+    }
+
+    pub fn search_features(&self, dto: SearchFeatureRequestDTO) -> SearchFeatureResponseDTO {
+        let features = self.use_case.search_features(dto.name.as_ref());
+        SearchFeatureResponseDTO { features }
+    }
+
+    pub fn add_feature(&self, dto: AddFeatureRequestDTO) -> MyResult<AddFeatureResponseDTO> {
+        self.use_case
+            .add_feature(dto.feature)
+            .map(|()| AddFeatureResponseDTO {})
     }
 }

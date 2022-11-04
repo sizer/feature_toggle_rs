@@ -1,5 +1,5 @@
 #[derive(clap::Parser)]
-#[command(name = "User list")]
+#[command(name = "minimal-feature-toggle")]
 #[command(author, version, about)]
 pub struct Cli {
     #[command(subcommand)]
@@ -8,13 +8,27 @@ pub struct Cli {
 
 #[derive(clap::Subcommand)]
 pub enum Commands {
-    Search(SearchArgs),
-    Add(AddArgs),
-    Update(UpdateArgs),
+    UserSearch(UserSearchArgs),
+    UserAdd(UserAddArgs),
+    UserUpdate(UserUpdateArgs),
+    FeatureSearch(FeatureSearchArgs),
+    FeatureAdd(FeatureAddArgs),
 }
 
 #[derive(clap::Args)]
-pub struct SearchArgs {
+pub struct FeatureAddArgs {
+    #[arg(short, long)]
+    pub name: String,
+}
+
+#[derive(clap::Args)]
+pub struct FeatureSearchArgs {
+    #[arg(short, long)]
+    pub name: Option<String>,
+}
+
+#[derive(clap::Args)]
+pub struct UserSearchArgs {
     #[arg(short, long)]
     pub email: Option<String>,
     #[arg(short, long)]
@@ -24,7 +38,7 @@ pub struct SearchArgs {
 }
 
 #[derive(clap::Args)]
-pub struct AddArgs {
+pub struct UserAddArgs {
     #[arg(short, long)]
     pub email: String,
     #[arg(short, long)]
@@ -34,7 +48,7 @@ pub struct AddArgs {
 }
 
 #[derive(clap::Args)]
-pub struct UpdateArgs {
+pub struct UserUpdateArgs {
     #[arg(short, long)]
     pub email: String,
     #[arg(short, long)]

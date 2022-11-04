@@ -1,11 +1,16 @@
 ///! Domain layer.
 mod email_address;
 mod error;
+mod feature;
 mod repositories;
 mod user;
 
 pub use email_address::EmailAddress;
 pub use error::{error_type::MyErrorType, MyError, MyResult};
+pub use feature::{
+    feature_id::FeatureId, feature_name::FeatureName, feature_repository::FeatureRepository,
+    Feature,
+};
 pub use repositories::Repositories;
 pub use user::{
     user_id::UserId,

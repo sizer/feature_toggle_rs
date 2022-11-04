@@ -1,4 +1,4 @@
-use domain::{EmailAddress, User, UserFirstName, UserLastName};
+use domain::{EmailAddress, Feature, FeatureName, User, UserFirstName, UserLastName};
 
 #[derive()]
 pub struct SearchUserRequestDTO {
@@ -29,3 +29,21 @@ pub struct UpdateUserRequestDTO {
 
 #[derive()]
 pub struct UpdateUserResponseDTO;
+
+#[derive()]
+pub struct SearchFeatureRequestDTO {
+    pub name: Option<FeatureName>,
+}
+
+#[derive()]
+pub struct SearchFeatureResponseDTO {
+    pub features: Vec<Feature>,
+}
+
+#[derive()]
+pub struct AddFeatureRequestDTO {
+    pub feature: Feature,
+}
+
+#[derive()]
+pub struct AddFeatureResponseDTO;
