@@ -1,4 +1,4 @@
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct UserId(u64);
 
 impl UserId {

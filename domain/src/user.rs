@@ -6,7 +6,7 @@ pub mod user_id;
 pub mod user_name;
 pub mod user_repository;
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct User {
     id: UserId,
     name: UserName,

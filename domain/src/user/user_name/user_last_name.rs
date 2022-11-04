@@ -1,6 +1,6 @@
 use std::fmt;
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 pub struct UserLastName(String);
 
 impl UserLastName {
