@@ -10,5 +10,5 @@ mod ui;
 fn main() {
     let repo = RepositoryImpls::default();
     let cli = Cli::new(&repo);
-    cli.process_cmd()
+    cli.run()
 }
