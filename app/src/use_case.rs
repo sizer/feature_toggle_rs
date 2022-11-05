@@ -106,6 +106,16 @@ impl<'r, R: Repositories> UseCase<'r, R> {
     }
 
     pub fn get_features(&self, user_id: domain::UserId) -> Vec<domain::Feature> {
-        self.feature_repo.list()
+        self.feature_repo
+            .list()
+            .into_iter()
+            .filter(|f| match f.strategy() {
+                &domain::FeatureDistributionStrategy::Public => true,
+                &domain::FeatureDistributionStrategy::Private => false,
+                &domain::FeatureDistributionStrategy::ABTest(p) => {
+                    user_id.v() % (100 / p as u64) == 0
+                }
+            })
+            .collect()
     }
 }

@@ -3,10 +3,8 @@ mod test_repositories;
 
 use app::UseCase;
 use domain::{EmailAddress, MockUserRepository, User, UserFirstName, UserLastName};
-use fixture::UserFixture;
+use fixture::user::{EmailAddressFixture, UserFirstNameFixture, UserFixture};
 use test_repositories::TestRepositories;
-
-use crate::fixture::{EmailAddressFixture, UserFirstNameFixture};
 
 #[test]
 fn test_with_blank_repository() {

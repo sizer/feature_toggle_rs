@@ -10,8 +10,8 @@ use interface_adapter::{
 use crate::{id_generator::IdGenerator, repository_impls::RepositoryImpls};
 
 use self::command::{
-    Cli as ClapCli, Commands, FeatureAddArgs, FeatureSearchArgs, UserAddArgs, UserSearchArgs,
-    UserUpdateArgs,
+    Cli as ClapCli, Commands, FeatureAddArgs, FeatureSearchArgs, FeatureStrategyOption,
+    UserAddArgs, UserSearchArgs, UserUpdateArgs,
 };
 
 pub(crate) struct Cli<'r> {
@@ -93,6 +93,13 @@ impl<'r> Cli<'r> {
             feature: domain::Feature::new(
                 FeatureId::new(IdGenerator::gen()),
                 domain::FeatureName::new(String::from(args.name.clone())),
+                match args.strategy {
+                    FeatureStrategyOption::Public => domain::FeatureDistributionStrategy::Public,
+                    FeatureStrategyOption::Private => domain::FeatureDistributionStrategy::Private,
+                    FeatureStrategyOption::ABTest => domain::FeatureDistributionStrategy::ABTest(
+                        args.percent.clone().get_or_insert(0).clone(),
+                    ),
+                },
             ),
         };
 
