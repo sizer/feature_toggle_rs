@@ -104,4 +104,8 @@ impl<'r, R: Repositories> UseCase<'r, R> {
     pub fn add_feature(&self, feature: domain::Feature) -> MyResult<()> {
         self.feature_repo.create(feature)
     }
+
+    pub fn get_features(&self, user_id: domain::UserId) -> Vec<domain::Feature> {
+        self.feature_repo.list()
+    }
 }

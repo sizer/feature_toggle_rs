@@ -13,7 +13,7 @@ fn test_with_blank_repository() {
     let mut user_repo = MockUserRepository::new();
     user_repo.expect_list().returning(|| vec![]);
 
-    let repositories = TestRepositories::new(user_repo);
+    let repositories = TestRepositories::new(Some(user_repo), None);
     let use_case = UseCase::new(&repositories);
 
     assert_eq!(use_case.search_users(None, None, None), vec![]);
@@ -38,7 +38,7 @@ fn test_with_3users_repository() {
         .expect_list()
         .returning(|| vec![User::fx1(), User::fx2(), User::fx3()]);
 
-    let repositories = TestRepositories::new(user_repo);
+    let repositories = TestRepositories::new(Some(user_repo), None);
     let use_case = UseCase::new(&repositories);
 
     assert_eq!(use_case.search_users(None, None, None), vec![]);

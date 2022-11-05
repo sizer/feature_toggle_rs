@@ -20,4 +20,6 @@ pub use user::{
 };
 
 #[cfg(feature = "mock")]
+pub use feature::feature_repository::MockFeatureRepository;
+#[cfg(feature = "mock")]
 pub use user::user_repository::MockUserRepository;
