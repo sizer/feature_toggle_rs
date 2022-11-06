@@ -105,12 +105,12 @@ impl<'r, R: Repositories> UseCase<'r, R> {
         self.feature_repo.create(feature)
     }
 
-    pub fn get_features(&self, user_id: domain::UserId) -> MyResult<Vec<domain::Feature>> {
+    pub fn get_features(&self, user_id: &domain::UserId) -> MyResult<Vec<domain::Feature>> {
         let user: Option<domain::User> = self
             .user_repo
             .list()
             .iter()
-            .filter(|u| u.id() == &user_id)
+            .filter(|u| u.id() == user_id)
             .map(|u| u.clone())
             .next();
 

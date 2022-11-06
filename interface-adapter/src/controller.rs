@@ -52,7 +52,7 @@ impl<'r, R: Repositories> Controller<'r, R> {
 
     pub fn get_feature(&self, dto: GetFeatureRequestDTO) -> MyResult<GetFeatureResponseDTO> {
         self.use_case
-            .get_features(dto.user_id)
+            .get_features(&dto.user_id)
             .map(|f| GetFeatureResponseDTO { features: f })
     }
 }
