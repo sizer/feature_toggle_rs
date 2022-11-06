@@ -10,8 +10,9 @@ use interface_adapter::{
 use crate::{id_generator::IdGenerator, repository_impls::RepositoryImpls};
 
 use self::command::{
-    Cli as ClapCli, Commands, FeatureAddArgs, FeatureGetArgs, FeatureSearchArgs,
-    FeatureStrategyOption, UserAddArgs, UserSearchArgs, UserUpdateArgs,
+    feature::{FeatureAddArgs, FeatureGetArgs, FeatureSearchArgs, FeatureStrategyOption},
+    user::{UserAddArgs, UserSearchArgs, UserUpdateArgs},
+    Cli as ClapCli, Commands,
 };
 
 pub(crate) struct Cli<'r> {
