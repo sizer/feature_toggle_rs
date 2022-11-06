@@ -3,15 +3,15 @@ mod command;
 use clap::Parser;
 use domain::{EmailAddress, FeatureId, UserFirstName, UserId, UserLastName, UserName};
 use interface_adapter::{
-    AddFeatureRequestDTO, AddUserRequestDTO, Controller, SearchFeatureRequestDTO,
-    SearchUserRequestDTO, UpdateUserRequestDTO,
+    AddFeatureRequestDTO, AddUserRequestDTO, Controller, GetFeatureRequestDTO,
+    SearchFeatureRequestDTO, SearchUserRequestDTO, UpdateUserRequestDTO,
 };
 
 use crate::{id_generator::IdGenerator, repository_impls::RepositoryImpls};
 
 use self::command::{
-    Cli as ClapCli, Commands, FeatureAddArgs, FeatureSearchArgs, FeatureStrategyOption,
-    UserAddArgs, UserSearchArgs, UserUpdateArgs,
+    Cli as ClapCli, Commands, FeatureAddArgs, FeatureGetArgs, FeatureSearchArgs,
+    FeatureStrategyOption, UserAddArgs, UserSearchArgs, UserUpdateArgs,
 };
 
 pub(crate) struct Cli<'r> {
@@ -33,6 +33,7 @@ impl<'r> Cli<'r> {
             Some(Commands::UserUpdate(args)) => self.process_update_user_cmd(args),
             Some(Commands::FeatureSearch(args)) => self.process_search_feature_cmd(args),
             Some(Commands::FeatureAdd(args)) => self.process_add_feature_cmd(args),
+            Some(Commands::FeatureGet(args)) => self.process_get_feature_cmd(args),
             None => panic!("Invalid command. Run with --help for usage."),
         }
     }
@@ -106,6 +107,17 @@ impl<'r> Cli<'r> {
         match self.controller.add_feature(req) {
             Ok(_res) => println!("Successfully added a feature."),
             Err(e) => println!("Failed to add a feature: {:?}", e),
+        }
+    }
+
+    fn process_get_feature_cmd(&self, args: &FeatureGetArgs) {
+        let req = GetFeatureRequestDTO {
+            user_id: domain::UserId::new(args.user_id),
+        };
+
+        match self.controller.get_feature(req) {
+            Ok(res) => println!("Found features:\n{:#?}", res.features),
+            Err(e) => println!("Failed to get features: {:?}", e),
         }
     }
 }

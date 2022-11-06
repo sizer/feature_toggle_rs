@@ -3,8 +3,8 @@ use domain::{MyResult, Repositories};
 
 use crate::{
     AddFeatureRequestDTO, AddFeatureResponseDTO, AddUserRequestDTO, AddUserResponseDTO,
-    SearchFeatureRequestDTO, SearchFeatureResponseDTO, SearchUserRequestDTO, SearchUserResponseDTO,
-    UpdateUserRequestDTO, UpdateUserResponseDTO,
+    GetFeatureRequestDTO, GetFeatureResponseDTO, SearchFeatureRequestDTO, SearchFeatureResponseDTO,
+    SearchUserRequestDTO, SearchUserResponseDTO, UpdateUserRequestDTO, UpdateUserResponseDTO,
 };
 
 pub mod dto;
@@ -48,5 +48,11 @@ impl<'r, R: Repositories> Controller<'r, R> {
         self.use_case
             .add_feature(dto.feature)
             .map(|()| AddFeatureResponseDTO {})
+    }
+
+    pub fn get_feature(&self, dto: GetFeatureRequestDTO) -> MyResult<GetFeatureResponseDTO> {
+        self.use_case
+            .get_features(dto.user_id)
+            .map(|f| GetFeatureResponseDTO { features: f })
     }
 }

@@ -13,6 +13,13 @@ pub enum Commands {
     UserUpdate(UserUpdateArgs),
     FeatureSearch(FeatureSearchArgs),
     FeatureAdd(FeatureAddArgs),
+    FeatureGet(FeatureGetArgs),
+}
+
+#[derive(clap::Args)]
+pub struct FeatureGetArgs {
+    #[arg(short, long)]
+    pub user_id: u64,
 }
 
 #[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, clap::ValueEnum)]

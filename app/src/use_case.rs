@@ -105,17 +105,32 @@ impl<'r, R: Repositories> UseCase<'r, R> {
         self.feature_repo.create(feature)
     }
 
-    pub fn get_features(&self, user_id: domain::UserId) -> Vec<domain::Feature> {
-        self.feature_repo
+    pub fn get_features(&self, user_id: domain::UserId) -> MyResult<Vec<domain::Feature>> {
+        let user: Option<domain::User> = self
+            .user_repo
             .list()
-            .into_iter()
-            .filter(|f| match f.strategy() {
-                &domain::FeatureDistributionStrategy::Public => true,
-                &domain::FeatureDistributionStrategy::Private => false,
-                &domain::FeatureDistributionStrategy::ABTest(p) => {
-                    user_id.v() % (100 / p as u64) == 0
-                }
-            })
-            .collect()
+            .iter()
+            .filter(|u| u.id() == &user_id)
+            .map(|u| u.clone())
+            .next();
+
+        match user {
+            Some(u) => Ok(self
+                .feature_repo
+                .list()
+                .into_iter()
+                .filter(|f| match f.strategy() {
+                    &domain::FeatureDistributionStrategy::Public => true,
+                    &domain::FeatureDistributionStrategy::Private => false,
+                    &domain::FeatureDistributionStrategy::ABTest(p) => {
+                        u.id().v() % (100 / p as u64) == 0
+                    }
+                })
+                .collect()),
+            None => Err(MyError::new(
+                MyErrorType::NotFound,
+                format!("User not found. UserId: {:?}", user_id),
+            )),
+        }
     }
 }
