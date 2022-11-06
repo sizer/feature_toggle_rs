@@ -52,7 +52,7 @@ fn test_with_ab_test_50_feature() {
     let mut feature_repo = MockFeatureRepository::new();
     feature_repo
         .expect_list()
-        .returning(|| vec![Feature::fx_ab_test_50()]);
+        .returning(|| vec![Feature::fx_ab_test(50)]);
 
     let repositories = TestRepositories::new(None, Some(feature_repo));
     let use_case = UseCase::new(&repositories);
@@ -60,7 +60,25 @@ fn test_with_ab_test_50_feature() {
     assert_eq!(use_case.get_features(domain::UserId::new(1)), vec![]);
     assert_eq!(
         use_case.get_features(domain::UserId::new(2)),
-        vec![Feature::fx_ab_test_50()]
+        vec![Feature::fx_ab_test(50)]
+    );
+}
+
+#[test]
+fn test_with_ab_test_33_feature() {
+    let mut feature_repo = MockFeatureRepository::new();
+    feature_repo
+        .expect_list()
+        .returning(|| vec![Feature::fx_ab_test(33)]);
+
+    let repositories = TestRepositories::new(None, Some(feature_repo));
+    let use_case = UseCase::new(&repositories);
+
+    assert_eq!(use_case.get_features(domain::UserId::new(1)), vec![]);
+    assert_eq!(use_case.get_features(domain::UserId::new(2)), vec![]);
+    assert_eq!(
+        use_case.get_features(domain::UserId::new(3)),
+        vec![Feature::fx_ab_test(33)]
     );
 }
 
@@ -71,7 +89,7 @@ fn test_with_multiple_features() {
         vec![
             Feature::fx_public_1(),
             Feature::fx_private_1(),
-            Feature::fx_ab_test_50(),
+            Feature::fx_ab_test(50),
         ]
     });
 
@@ -84,6 +102,6 @@ fn test_with_multiple_features() {
     );
     assert_eq!(
         use_case.get_features(domain::UserId::new(2)),
-        vec![Feature::fx_public_1(), Feature::fx_ab_test_50()]
+        vec![Feature::fx_public_1(), Feature::fx_ab_test(50)]
     );
 }

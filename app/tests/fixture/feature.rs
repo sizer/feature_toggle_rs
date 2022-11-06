@@ -15,11 +15,11 @@ pub trait FeatureFixture {
         )
     }
 
-    fn fx_ab_test_50() -> domain::Feature {
+    fn fx_ab_test(percent: u8) -> domain::Feature {
         domain::Feature::new(
             domain::FeatureId::new(1),
-            domain::FeatureName::new("AbTestFeature50"),
-            domain::FeatureDistributionStrategy::ABTest(50),
+            domain::FeatureName::new(format!("AbTestFeature{}", percent)),
+            domain::FeatureDistributionStrategy::ABTest(percent),
         )
     }
 }
