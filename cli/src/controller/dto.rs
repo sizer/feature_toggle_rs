@@ -1,7 +1,7 @@
-use domain::{EmailAddress, Feature, FeatureName, User, UserFirstName, UserLastName};
+use domain::{Feature, FeatureName, User, UserFirstName, UserLastName};
 
 pub struct SearchUserRequestDTO {
-    pub email: Option<EmailAddress>,
+    pub email: Option<domain::EmailAddress>,
     pub first_name: Option<UserFirstName>,
     pub last_name: Option<UserLastName>,
 }
@@ -11,13 +11,14 @@ pub struct SearchUserResponseDTO {
 }
 
 pub struct AddUserRequestDTO {
-    pub user: User,
+    pub name: domain::UserName,
+    pub email: domain::EmailAddress,
 }
 
 pub struct AddUserResponseDTO;
 
 pub struct UpdateUserRequestDTO {
-    pub email: EmailAddress,
+    pub email: domain::EmailAddress,
     pub first_name: Option<UserFirstName>,
     pub last_name: Option<UserLastName>,
 }
@@ -33,7 +34,8 @@ pub struct SearchFeatureResponseDTO {
 }
 
 pub struct AddFeatureRequestDTO {
-    pub feature: Feature,
+    pub name: FeatureName,
+    pub strategy: domain::FeatureDistributionStrategy,
 }
 
 pub struct AddFeatureResponseDTO;

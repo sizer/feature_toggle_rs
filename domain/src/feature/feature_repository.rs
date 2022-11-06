@@ -1,4 +1,4 @@
-use crate::{error::MyResult, Feature};
+use crate::{error::MyResult, Feature, FeatureDistributionStrategy, FeatureName};
 
 #[cfg_attr(feature = "mock", mockall::automock)]
 pub trait FeatureRepository {
@@ -7,7 +7,7 @@ pub trait FeatureRepository {
     /// # Failures
     ///
     /// - `MyErrorType::Duplicate` : when feature with given ID already exists.
-    fn create(&self, feature: Feature) -> MyResult<()>;
+    fn create(&self, name: FeatureName, strategy: FeatureDistributionStrategy) -> MyResult<()>;
 
     /// # Failures
     ///

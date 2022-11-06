@@ -4,11 +4,11 @@ use self::{
     feature_repository_impl::FeatureRepositoryImpl, user_repository_impl::UserRepositoryImpl,
 };
 
-pub(crate) mod feature_repository_impl;
-pub(crate) mod user_repository_impl;
+pub mod feature_repository_impl;
+pub mod user_repository_impl;
 
 #[derive(Default)]
-pub(crate) struct RepositoryImpls {
+pub struct RepositoryImpls {
     user_repo: UserRepositoryImpl,
     feature_repo: FeatureRepositoryImpl,
 }

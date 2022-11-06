@@ -2,4 +2,5 @@
 pub enum MyErrorType {
     NotFound,
     Duplicate,
+    PersistFailed,
 }

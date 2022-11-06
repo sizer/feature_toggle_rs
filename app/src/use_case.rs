@@ -50,8 +50,8 @@ impl<'r, R: Repositories> UseCase<'r, R> {
         }
     }
 
-    pub fn add_user(&self, user: User) -> MyResult<()> {
-        self.user_repo.create(user)
+    pub fn add_user(&self, name: domain::UserName, email: domain::EmailAddress) -> MyResult<()> {
+        self.user_repo.create(name, email)
     }
 
     pub fn update_user_by_email(
@@ -101,8 +101,12 @@ impl<'r, R: Repositories> UseCase<'r, R> {
         }
     }
 
-    pub fn add_feature(&self, feature: domain::Feature) -> MyResult<()> {
-        self.feature_repo.create(feature)
+    pub fn add_feature(
+        &self,
+        name: domain::FeatureName,
+        strategy: domain::FeatureDistributionStrategy,
+    ) -> MyResult<()> {
+        self.feature_repo.create(name, strategy)
     }
 
     pub fn get_features(&self, user_id: &domain::UserId) -> MyResult<Vec<domain::Feature>> {

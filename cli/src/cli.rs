@@ -1,13 +1,16 @@
 mod command;
 
 use clap::Parser;
-use domain::{EmailAddress, FeatureId, UserFirstName, UserId, UserLastName, UserName};
-use interface_adapter::{
-    AddFeatureRequestDTO, AddUserRequestDTO, Controller, GetFeatureRequestDTO,
-    SearchFeatureRequestDTO, SearchUserRequestDTO, UpdateUserRequestDTO,
-};
+use domain::{EmailAddress, UserFirstName, UserLastName, UserName};
+use infra::repository_impls::RepositoryImpls;
 
-use crate::{id_generator::IdGenerator, repository_impls::RepositoryImpls};
+use crate::controller::{
+    dto::{
+        AddFeatureRequestDTO, AddUserRequestDTO, GetFeatureRequestDTO, SearchFeatureRequestDTO,
+        SearchUserRequestDTO, UpdateUserRequestDTO,
+    },
+    Controller,
+};
 
 use self::command::{
     feature::{FeatureAddArgs, FeatureGetArgs, FeatureSearchArgs, FeatureStrategyOption},
@@ -52,14 +55,11 @@ impl<'r> Cli<'r> {
 
     fn process_add_user_cmd(&self, args: &UserAddArgs) {
         let req = AddUserRequestDTO {
-            user: domain::User::new(
-                UserId::new(IdGenerator::gen()),
-                UserName::new(
-                    UserFirstName::new(args.firstname.clone()),
-                    UserLastName::new(args.lastname.clone()),
-                ),
-                EmailAddress::new(args.email.clone()),
+            name: UserName::new(
+                UserFirstName::new(args.firstname.clone()),
+                UserLastName::new(args.lastname.clone()),
             ),
+            email: EmailAddress::new(args.email.clone()),
         };
 
         match self.controller.add_user(req) {
@@ -92,17 +92,14 @@ impl<'r> Cli<'r> {
 
     fn process_add_feature_cmd(&self, args: &FeatureAddArgs) {
         let req = AddFeatureRequestDTO {
-            feature: domain::Feature::new(
-                FeatureId::new(IdGenerator::gen()),
-                domain::FeatureName::new(String::from(args.name.clone())),
-                match args.strategy {
-                    FeatureStrategyOption::Public => domain::FeatureDistributionStrategy::Public,
-                    FeatureStrategyOption::Private => domain::FeatureDistributionStrategy::Private,
-                    FeatureStrategyOption::ABTest => domain::FeatureDistributionStrategy::ABTest(
-                        args.percent.clone().get_or_insert(0).clone(),
-                    ),
-                },
-            ),
+            name: domain::FeatureName::new(String::from(args.name.clone())),
+            strategy: match args.strategy {
+                FeatureStrategyOption::Public => domain::FeatureDistributionStrategy::Public,
+                FeatureStrategyOption::Private => domain::FeatureDistributionStrategy::Private,
+                FeatureStrategyOption::ABTest => domain::FeatureDistributionStrategy::ABTest(
+                    args.percent.clone().get_or_insert(0).clone(),
+                ),
+            },
         };
 
         match self.controller.add_feature(req) {

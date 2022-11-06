@@ -1,6 +1,6 @@
 use std::{fs, io::Write, path};
 
-use domain::Feature;
+use domain::{Feature, MyError, MyErrorType, MyResult};
 
 #[derive()]
 pub(crate) struct FeatureYamlStorage;
@@ -11,7 +11,7 @@ impl FeatureYamlStorage {
 
         if !Self::yaml_path().exists() {
             let yml = slf.serialize_features(&vec![]);
-            Self::write_to_yaml(&yml)
+            Self::write_to_yaml(&yml).expect("Initialize YamlStorage failed.")
         }
         slf
     }
@@ -21,7 +21,7 @@ impl FeatureYamlStorage {
         self.deserialize_features(&yml)
     }
 
-    pub(crate) fn save(&self, features: &Vec<Feature>) {
+    pub(crate) fn save(&self, features: &Vec<Feature>) -> MyResult<()> {
         let yml = self.serialize_features(&features);
         Self::write_to_yaml(&yml)
     }
@@ -38,14 +38,30 @@ impl FeatureYamlStorage {
         path::PathBuf::from("features.yml")
     }
 
-    fn write_to_yaml(yml: &str) {
-        let mut f = fs::OpenOptions::new()
+    fn write_to_yaml(yml: &str) -> MyResult<()> {
+        let mut file = fs::OpenOptions::new()
             .create(true)
             .write(true)
             .open(Self::yaml_path())
-            .expect("Error on opening YAML file");
+            .map_err(|e| {
+                MyError::new(
+                    MyErrorType::PersistFailed,
+                    format!("Error on opening YAML file: {}", e),
+                )
+            })?;
 
-        write!(f, "{}", yml).expect("Error on writing to YAML file");
-        f.flush().expect("ERror on flusing");
+        write!(file, "{}", yml).map_err(|e| {
+            MyError::new(
+                MyErrorType::PersistFailed,
+                format!("Error on writing to YAML file: {}", e),
+            )
+        })?;
+
+        file.flush().map_err(|e| {
+            MyError::new(
+                MyErrorType::PersistFailed,
+                format!("Error on flusing: {}", e),
+            )
+        })
     }
 }

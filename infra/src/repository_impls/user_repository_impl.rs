@@ -2,10 +2,10 @@ use std::cell;
 
 use domain::{MyError, MyErrorType, MyResult, User, UserRepository};
 
-use crate::persistence::yaml::user_yaml_storage::UserYamlStorage;
+use crate::{id_generator::IdGenerator, persistence::yaml::user_yaml_storage::UserYamlStorage};
 
 #[derive()]
-pub(crate) struct UserRepositoryImpl {
+pub struct UserRepositoryImpl {
     users: cell::RefCell<Vec<User>>,
 }
 
@@ -24,22 +24,14 @@ impl UserRepository for UserRepositoryImpl {
         self.users.borrow().clone()
     }
 
-    fn create(&self, user: User) -> MyResult<()> {
-        if self
-            .users
-            .borrow()
-            .iter()
-            .any(|u| u.id() == user.id() || u.email() == user.email())
-        {
-            Err(MyError::new(
-                MyErrorType::Duplicate,
-                format!("Duplicate user: {:?}", user),
-            ))
-        } else {
-            self.users.borrow_mut().push(user);
-            self.save();
-            Ok(())
-        }
+    fn create(&self, name: domain::UserName, email: domain::EmailAddress) -> MyResult<()> {
+        self.users.borrow_mut().push(domain::User::new(
+            domain::UserId::new(IdGenerator::gen()),
+            name,
+            email,
+        ));
+        self.save();
+        Ok(())
     }
 
     fn update(&self, user: User) -> MyResult<()> {

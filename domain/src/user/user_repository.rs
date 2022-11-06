@@ -1,4 +1,4 @@
-use crate::error::MyResult;
+use crate::{error::MyResult, EmailAddress, UserName};
 
 use super::User;
 
@@ -9,7 +9,7 @@ pub trait UserRepository {
     /// # Failures
     ///
     /// - `MyErrorType::Duplicate` : when user with given ID already exists.
-    fn create(&self, user: User) -> MyResult<()>;
+    fn create(&self, name: UserName, email: EmailAddress) -> MyResult<()>;
 
     /// # Failures
     ///

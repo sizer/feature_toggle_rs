@@ -2,10 +2,12 @@ use std::cell;
 
 use domain::{Feature, FeatureRepository, MyError, MyErrorType, MyResult};
 
-use crate::persistence::yaml::feature_yaml_storage::FeatureYamlStorage;
+use crate::{
+    id_generator::IdGenerator, persistence::yaml::feature_yaml_storage::FeatureYamlStorage,
+};
 
 #[derive()]
-pub(crate) struct FeatureRepositoryImpl {
+pub struct FeatureRepositoryImpl {
     features: cell::RefCell<Vec<Feature>>,
 }
 
@@ -24,22 +26,17 @@ impl FeatureRepository for FeatureRepositoryImpl {
         self.features.borrow().clone()
     }
 
-    fn create(&self, feature: Feature) -> MyResult<()> {
-        if self
-            .features
-            .borrow()
-            .iter()
-            .any(|f| f.id() == feature.id() || f.name() == feature.name())
-        {
-            Err(MyError::new(
-                MyErrorType::Duplicate,
-                format!("Duplicate feature: {:?}", feature),
-            ))
-        } else {
-            self.features.borrow_mut().push(feature);
-            self.save();
-            Ok(())
-        }
+    fn create(
+        &self,
+        name: domain::FeatureName,
+        strategy: domain::FeatureDistributionStrategy,
+    ) -> MyResult<()> {
+        self.features.borrow_mut().push(domain::Feature::new(
+            domain::FeatureId::new(IdGenerator::gen()),
+            name,
+            strategy,
+        ));
+        self.save()
     }
 
     fn update(&self, feature: Feature) -> MyResult<()> {
@@ -63,13 +60,12 @@ impl FeatureRepository for FeatureRepositoryImpl {
             })?;
 
         let _old = std::mem::replace(&mut self.features.borrow_mut()[idx], feature);
-        self.save();
-        Ok(())
+        self.save()
     }
 }
 
 impl FeatureRepositoryImpl {
-    fn save(&self) {
+    fn save(&self) -> MyResult<()> {
         let storage = FeatureYamlStorage::new();
         storage.save(&self.features.borrow())
     }
