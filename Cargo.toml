@@ -5,4 +5,5 @@ members = [
   "app",
   "infra",
   "cli",
+  "api",
 ]
